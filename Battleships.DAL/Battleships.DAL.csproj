@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Battleships.Core\Battleships.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="IRepositories\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

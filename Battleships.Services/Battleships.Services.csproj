@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Battleships.Core\Battleships.Core.csproj" />
+    <ProjectReference Include="..\Battleships.DAL\Battleships.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
