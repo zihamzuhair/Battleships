@@ -52,8 +52,12 @@ namespace Battleships.Services
             await _boardRepository.SaveBoardAsync(board);
         }
 
-
-
+        // New method to check if the game is initiated
+        public async Task<bool> IsGameInitiatedAsync()
+        {
+            var board = await _boardRepository.GetBoardAsync();
+            return board != null && board.FleetId != 0; // Check if the board and its fleet exist
+        }
         public async Task<ShootResponseDto> ShootAsync(char rowChar, int column)
         {
             var board = await _boardRepository.GetBoardAsync();
