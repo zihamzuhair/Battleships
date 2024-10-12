@@ -1,9 +1,8 @@
 using Battleships.Services;
-using Battleships.DAL.IRepositories;
-using Battleships.DAL.Repositories;
 using Battleships.Services.IService;
 
 using Battleships.DAL.DbFactory;
+using Battleships.DAL.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register application services.
-builder.Services.AddScoped<IBoardRepository, BoardRepository>();
-builder.Services.AddScoped<IFleetRepository, FleetRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddSingleton<Random>();
 

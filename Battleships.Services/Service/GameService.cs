@@ -1,26 +1,24 @@
 ﻿using Battleships.Core.DTOs;
 using Battleships.Core.Models;
-using Battleships.DAL.IRepositories;
+using Battleships.DAL.UnitOfWork;
 using Battleships.Services.IService;
 
 namespace Battleships.Services
 {
     public class GameService : IGameService
     {
-        private readonly IBoardRepository _boardRepository;
-        private readonly IFleetRepository _fleetRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly Random _random;
         private const int BoardSize = 10;
 
-        public GameService(IBoardRepository boardRepository, IFleetRepository fleetRepository, Random random)
+        public GameService(IUnitOfWork unitOfWork, Random random)
         {
-            _boardRepository = boardRepository;
-            _fleetRepository = fleetRepository;
+            _unitOfWork = unitOfWork;
             _random = random;
         }
         public async Task InitializeGameAsync()
         {
-            var board = await _boardRepository.GetBoardAsync();
+            var board = await _unitOfWork.Boards.GetBoardAsync();
 
             // Create an empty grid for the board.
             var grid = CreateEmptyGrid();
@@ -34,12 +32,14 @@ namespace Battleships.Services
             fleet.Ships.Add(new Ship { Name = "Destroyer1", Size = 4 });
             fleet.Ships.Add(new Ship { Name = "Destroyer2", Size = 4 });
 
-            // Save the fleet to the database.
-            await _fleetRepository.SaveFleetAsync(fleet);
+            // Save the fleet and associate with the board.
+            await _unitOfWork.Fleets.SaveFleetAsync(fleet);
+            board.FleetId = fleet.Id;
 
+     
             // Associate the Fleet with the Board.
             board.FleetId = fleet.Id;
-            await _boardRepository.SaveBoardAsync(board);
+            await _unitOfWork.Boards.SaveBoardAsync(board);
 
             // Place ships on the board.
             foreach (var ship in fleet.Ships)
@@ -49,18 +49,21 @@ namespace Battleships.Services
 
             // Update the board grid after placing ships.
             board.SerializedGrid = SerializeGrid(grid);
-            await _boardRepository.SaveBoardAsync(board);
+            await _unitOfWork.Boards.SaveBoardAsync(board);
+
+            // Save changes using Unit of Work
+            await _unitOfWork.CompleteAsync();
         }
 
         // New method to check if the game is initiated
         public async Task<bool> IsGameInitiatedAsync()
         {
-            var board = await _boardRepository.GetBoardAsync();
+            var board = await _unitOfWork.Boards.GetBoardAsync();
             return board != null && board.FleetId != 0; // Check if the board and its fleet exist
         }
         public async Task<ShootResponseDto> ShootAsync(char rowChar, int column)
         {
-            var board = await _boardRepository.GetBoardAsync();
+            var board = await _unitOfWork.Boards.GetBoardAsync();
             var grid = DeserializeGrid(board.SerializedGrid);
             var (row, colIndex) = ParsePosition(rowChar, column);
 
@@ -81,7 +84,8 @@ namespace Battleships.Services
             }
 
             board.SerializedGrid = SerializeGrid(grid);
-            await _boardRepository.SaveBoardAsync(board);
+            await _unitOfWork.Boards.SaveBoardAsync(board);
+            await _unitOfWork.CompleteAsync();
 
             return new ShootResponseDto
             {
@@ -95,18 +99,19 @@ namespace Battleships.Services
 
         public async Task<string> GetBoardStateAsync()
         {
-            var board = await _boardRepository.GetBoardAsync();
+            var board = await _unitOfWork.Boards.GetBoardAsync();
             var grid = DeserializeGrid(board.SerializedGrid);
             return GetBoardDisplay(grid);
         }
 
         public async Task ResetGameAsync()
         {
-            var board = await _boardRepository.GetBoardAsync();
+            var board = await _unitOfWork.Boards.GetBoardAsync();
             var emptyGrid = CreateEmptyGrid(); // Create the empty 2D array.
             board.SerializedGrid = SerializeGrid(emptyGrid); // Serialize the 2D array into a string.
-            board.Fleet?.Ships.ForEach(s => s.Hits = 0);          
-            await _boardRepository.SaveBoardAsync(board);
+            board.Fleet?.Ships.ForEach(s => s.Hits = 0);
+            await _unitOfWork.Boards.SaveBoardAsync(board);       
+            await _unitOfWork.CompleteAsync();
         }
 
         private void PlaceShip(Board board, Ship ship)
