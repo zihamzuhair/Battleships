@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Battleships.DAL\Battleships.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+
 </Project>
