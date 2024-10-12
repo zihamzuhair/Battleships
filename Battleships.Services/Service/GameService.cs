@@ -26,7 +26,6 @@ namespace Battleships.Services
             var grid = GridHelper.CreateEmptyGrid(BoardSize);
             board.SerializedGrid = GridHelper.SerializeGrid(grid);
 
-            // Create a new Fleet for the board.
             var fleet = new Fleet();
 
             // Add ships to the fleet.
@@ -38,17 +37,16 @@ namespace Battleships.Services
             await _unitOfWork.Fleets.SaveFleetAsync(fleet);
             board.FleetId = fleet.Id;
 
-            // Associate the Fleet with the Board.
+       
             board.FleetId = fleet.Id;
             await _unitOfWork.Boards.SaveBoardAsync(board);
 
-            // Place ships on the board using the helper.
             ShipHelper.PlaceShips(board, fleet.Ships, BoardSize);
 
             // Update the board after placing ships.
             await _unitOfWork.Boards.SaveBoardAsync(board);
 
-            // Save changes using Unit of Work
+        
             await _unitOfWork.CompleteAsync();
         }
 
@@ -129,7 +127,7 @@ namespace Battleships.Services
                         display.Append($"{grid[row, col]} ");
                     }
                 }
-                display.AppendLine(); // Add a newline at the end of each row
+                display.AppendLine(); 
             }
 
             return display.ToString();

@@ -12,7 +12,7 @@ namespace Battleships.Services.Helpers
         {
             foreach (var ship in ships)
             {
-                PlaceShip(board, ship, boardSize);  // Call PlaceShip for each ship
+                PlaceShip(board, ship, boardSize);  
             }
         }
 
@@ -53,7 +53,6 @@ namespace Battleships.Services.Helpers
                 }
             }
 
-            // Update the board's serialized grid
             board.SerializedGrid = GridHelper.SerializeGrid(grid);
         }
 

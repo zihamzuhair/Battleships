@@ -7,10 +7,8 @@ namespace Battleships.Core.Models
     {
         public string? SerializedGrid { get; set; } // Store the serialized grid as a string
 
-        // Foreign key for the Fleet.
         public int FleetId { get; set; }
-
-        // Navigation property for the Fleet.
+     
         [ForeignKey("FleetId")]
         public Fleet Fleet { get; set; }
     }

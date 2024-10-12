@@ -26,7 +26,7 @@ namespace BattleshipApi.Controllers
                 await _gameService.InitializeGameAsync();
                 return Ok("Game initialized with ships placed.");
             }
-            catch (Exception ex) // Catch-all for unexpected errors
+            catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while initializing the game: {ex.Message}");
             }
@@ -57,7 +57,7 @@ namespace BattleshipApi.Controllers
             {
                 return Conflict(ex.Message);
             }
-            catch (Exception ex) // Catch-all for unexpected errors
+            catch (Exception ex) 
             {
                 return StatusCode(500, $"An error occurred while processing the shot: {ex.Message}");
             }
@@ -79,7 +79,7 @@ namespace BattleshipApi.Controllers
                 var boardState = await _gameService.GetBoardStateWithShipsAsync(showPlacedShips);
                 return Ok(boardState);
             }
-            catch (Exception ex) // Catch-all for unexpected errors
+            catch (Exception ex) 
             {
                 return StatusCode(500, $"An error occurred while retrieving the board state: {ex.Message}");
             }
@@ -101,7 +101,7 @@ namespace BattleshipApi.Controllers
                 await _gameService.ResetGameAsync();
                 return Ok("The game has been reset.");
             }
-            catch (Exception ex) // Catch-all for unexpected errors
+            catch (Exception ex) 
             {
                 return StatusCode(500, $"An error occurred while resetting the game: {ex.Message}");
             }

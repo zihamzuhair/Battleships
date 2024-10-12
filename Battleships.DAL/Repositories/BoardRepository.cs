@@ -3,7 +3,6 @@ using Battleships.DAL.Context;
 using Battleships.DAL.IRepositories;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Battleships.DAL.Repositories
 {
     public class BoardRepository : IBoardRepository

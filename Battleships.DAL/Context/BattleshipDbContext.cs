@@ -14,19 +14,8 @@ namespace Battleships.DAL.Context
 
         }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Board>()
-        //        .HasMany(b => b.Ships)
-        //        .WithOne()
-        //        .OnDelete(DeleteBehavior.Cascade);
-
-        //    base.OnModelCreating(modelBuilder);
-        //}
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // Configure the Board entity.
+        {         
             modelBuilder.Entity<Board>(entity =>
             {
                 entity.HasKey(b => b.Id);
@@ -39,7 +28,6 @@ namespace Battleships.DAL.Context
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Configure the Fleet entity.
             modelBuilder.Entity<Fleet>(entity =>
             {
                 entity.HasKey(f => f.Id);
@@ -51,7 +39,6 @@ namespace Battleships.DAL.Context
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Configure the Ship entity.
             modelBuilder.Entity<Ship>(entity =>
             {
                 entity.HasKey(s => s.Id);
@@ -61,8 +48,7 @@ namespace Battleships.DAL.Context
             });
 
             base.OnModelCreating(modelBuilder);
-        }
-    
+        }    
     }
 }
 
