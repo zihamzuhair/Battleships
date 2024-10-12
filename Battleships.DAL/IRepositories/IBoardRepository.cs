@@ -2,7 +2,7 @@
 
 namespace Battleships.DAL.IRepositories
 {
-    public interface IGameRepository
+    public interface IBoardRepository
     {
         Task<Board> GetBoardAsync();
         Task SaveBoardAsync(Board board);

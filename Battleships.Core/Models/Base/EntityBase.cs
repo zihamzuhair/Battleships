@@ -2,9 +2,9 @@
 
 namespace Battleships.Core.Models.Base
 {
-    public class EntityBase
+    public class EntityBase<T>
     {
         [Key]
-        public int Id { get; set; }
+        public T Id { get; set; } 
     }
 }

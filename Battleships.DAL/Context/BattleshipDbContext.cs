@@ -7,6 +7,7 @@ namespace Battleships.DAL.Context
     {
         public DbSet<Board> Boards { get; set; }
         public DbSet<Ship> Ships { get; set; }
+        public DbSet<Fleet> Fleets { get; set; }
 
         public BattleshipDbContext(DbContextOptions<BattleshipDbContext> options) : base(options)
         {
@@ -25,49 +26,43 @@ namespace Battleships.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Define relationships and constraints between entities.
-
             // Configure the Board entity.
             modelBuilder.Entity<Board>(entity =>
             {
-                // Define primary key.
                 entity.HasKey(b => b.Id);
-                          
-                // Define a required field for SerializedGrid.
                 entity.Property(b => b.SerializedGrid);
 
-                // Configure relationships with Ships (one-to-many).
-                entity.HasMany(b => b.Ships)
-                    .WithOne()
-                    .HasForeignKey(s => s.BoardId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                // One-to-One relationship between Board and Fleet.
+                entity.HasOne(b => b.Fleet)
+                      .WithOne(f => f.Board)
+                      .HasForeignKey<Board>(b => b.FleetId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure the Fleet entity.
+            modelBuilder.Entity<Fleet>(entity =>
+            {
+                entity.HasKey(f => f.Id);
+
+                // One-to-Many relationship between Fleet and Ships.
+                entity.HasMany(f => f.Ships)
+                      .WithOne(s => s.Fleet)
+                      .HasForeignKey(s => s.FleetId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Configure the Ship entity.
             modelBuilder.Entity<Ship>(entity =>
             {
-                // Define primary key.
-                entity.HasKey(s => s.Id);         
-
-                // Define required fields for Ship.
-                entity.Property(s => s.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(s => s.Size)
-                    .IsRequired();
-
-                entity.Property(s => s.Hits)
-                    .IsRequired();
-
-                // Configure the relationship to Board (many-to-one).
-                entity.HasOne<Board>()
-                    .WithMany(b => b.Ships)
-                    .HasForeignKey(s => s.BoardId);
+                entity.HasKey(s => s.Id);
+                entity.Property(s => s.Name).IsRequired().HasMaxLength(50);
+                entity.Property(s => s.Size).IsRequired();
+                entity.Property(s => s.Hits).IsRequired();
             });
 
             base.OnModelCreating(modelBuilder);
         }
+    
     }
 }
 

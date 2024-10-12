@@ -6,18 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Battleships.DAL.Repositories
 {
-    public class GameRepository : IGameRepository
+    public class BoardRepository : IBoardRepository
     {
         private readonly BattleshipDbContext _context;
 
-        public GameRepository(BattleshipDbContext context)
+        public BoardRepository(BattleshipDbContext context)
         {
             _context = context;
         }
 
         public async Task<Board> GetBoardAsync()
         {
-            var board = await _context.Boards.Include(b => b.Ships).FirstOrDefaultAsync();
+            var board = await _context.Boards
+                .Include(b => b.Fleet)
+                .ThenInclude(f => f.Ships)
+                .FirstOrDefaultAsync();
             if (board == null)
             {
                 board = new Board();

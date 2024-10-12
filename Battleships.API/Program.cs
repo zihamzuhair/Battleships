@@ -23,7 +23,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register application services.
-builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+builder.Services.AddScoped<IFleetRepository, FleetRepository>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddSingleton<Random>();
 
