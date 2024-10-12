@@ -67,7 +67,7 @@ namespace BattleshipApi.Controllers
         /// Gets the current state of the game board.
         /// </summary>
         [HttpGet("board")]
-        public async Task<IActionResult> GetBoard()
+        public async Task<IActionResult> GetBoard([FromQuery] bool showPlacedShips = false)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace BattleshipApi.Controllers
                     return BadRequest("Game not initiated. Please initialize the game before retrieving the board.");
                 }
 
-                var boardState = await _gameService.GetBoardStateAsync();
+                var boardState = await _gameService.GetBoardStateWithShipsAsync(showPlacedShips);
                 return Ok(boardState);
             }
             catch (Exception ex) // Catch-all for unexpected errors
@@ -84,7 +84,7 @@ namespace BattleshipApi.Controllers
                 return StatusCode(500, $"An error occurred while retrieving the board state: {ex.Message}");
             }
         }
-
+         
         /// <summary>
         /// Resets the game board to its initial state.
         /// </summary>

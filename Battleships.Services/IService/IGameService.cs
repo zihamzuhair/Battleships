@@ -6,8 +6,8 @@ namespace Battleships.Services.IService
     {
         Task InitializeGameAsync();
         Task<bool> IsGameInitiatedAsync();
-        Task<ShootResponseDto> ShootAsync(char row, int column);
-        Task<string> GetBoardStateAsync();
+        Task<ShootResponseDto> ShootAsync(char row, int column);   
+        Task<string> GetBoardStateWithShipsAsync(bool showPlacedShips);
         Task ResetGameAsync();
     }
 }

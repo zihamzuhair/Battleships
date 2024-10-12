@@ -24,7 +24,6 @@ builder.Services.AddSwaggerGen();
 // Register application services.
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddSingleton<Random>();
 
 var app = builder.Build();
 
