@@ -20,8 +20,14 @@ namespace Battleships.DAL.Context
             modelBuilder.Entity<Player>(entity =>
             {
                 entity.HasKey(p => p.Id);
-                entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
-                entity.Property(p => p.IsComputer).IsRequired();
+                entity.Property(p => p.Name)
+                      .IsRequired()
+                      .HasMaxLength(100);
+                entity.Property(p => p.IsComputer)
+                      .IsRequired();
+                entity.Property(p => p.Score)  // Configure Score property
+                      .IsRequired()
+                      .HasDefaultValue(0);  // Set default score to 0
 
                 entity.HasOne(p => p.Board)
                       .WithOne()
@@ -38,8 +44,10 @@ namespace Battleships.DAL.Context
             modelBuilder.Entity<Board>(entity =>
             {
                 entity.HasKey(b => b.Id);
-                entity.Property(b => b.SerializedGrid).IsRequired(false);
-                entity.Property(b => b.UserId).IsRequired();
+                entity.Property(b => b.SerializedGrid)
+                      .IsRequired(false);
+                entity.Property(b => b.UserId)
+                      .IsRequired();
             });
 
             // Configure the Fleet entity
@@ -50,7 +58,7 @@ namespace Battleships.DAL.Context
                 // One-to-Many relationship between Fleet and Ships
                 entity.HasMany(f => f.Ships)
                       .WithOne(s => s.Fleet)
-                      .HasForeignKey(s => s.FleetId) // Explicitly map FleetId in Ship entity
+                      .HasForeignKey(s => s.FleetId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -58,9 +66,13 @@ namespace Battleships.DAL.Context
             modelBuilder.Entity<Ship>(entity =>
             {
                 entity.HasKey(s => s.Id);
-                entity.Property(s => s.Name).IsRequired().HasMaxLength(50);
-                entity.Property(s => s.Size).IsRequired();
-                entity.Property(s => s.Hits).IsRequired();
+                entity.Property(s => s.Name)
+                      .IsRequired()
+                      .HasMaxLength(50);
+                entity.Property(s => s.Size)
+                      .IsRequired();
+                entity.Property(s => s.Hits)
+                      .IsRequired();
 
                 // Ensure the FleetId is properly mapped to avoid shadow property creation
                 entity.HasOne(s => s.Fleet)

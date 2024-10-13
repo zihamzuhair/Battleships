@@ -98,7 +98,9 @@ namespace Battleships.Services
                     Column = column,
                     UserHit = userHit,
                     ComputerHit = computerHit,
-                    GameOver = computerPlayer.Fleet.Ships.All(ship => ship.Hits >= ship.Size) || userPlayer.Fleet.Ships.All(ship => ship.Hits >= ship.Size)
+                    GameOver = computerPlayer.Fleet.Ships.All(ship => ship.Hits >= ship.Size) || userPlayer.Fleet.Ships.All(ship => ship.Hits >= ship.Size),
+                    UserScore = userPlayer.Score,  
+                    ComputerScore = computerPlayer.Score 
                 };
             }
             catch (Exception ex)
@@ -383,6 +385,16 @@ namespace Battleships.Services
                     grid[row, colIndex] = GlobalConstants.Hit;
                     RegisterHitOnShip(player, row, colIndex);
                     hit = true;
+
+                    // Add 15 points for hitting a ship
+                    player.Score += 15;
+
+                    // Check if the ship is fully destroyed and add 50 points
+                    var hitShip = player.Fleet.Ships.FirstOrDefault(ship => ship.Hits >= ship.Size);
+                    if (hitShip != null && hitShip.Hits == hitShip.Size)
+                    {
+                        player.Score += 50;
+                    }
                 }
                 else if (grid[row, colIndex] == GlobalConstants.Water)
                 {
@@ -402,6 +414,7 @@ namespace Battleships.Services
                 throw;
             }
         }
+
         #endregion Player Helpers end
 
         #region Ship helpers

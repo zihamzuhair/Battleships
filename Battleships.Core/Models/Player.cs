@@ -6,6 +6,7 @@ namespace Battleships.Core.Models
     {
         public string Name { get; set; } = string.Empty;
         public bool IsComputer { get; set; }
+        public int Score { get; set; } = 0;
         public int BoardId { get; set; }
         public Board Board { get; set; } = null!;
         public int FleetId { get; set; } 
