@@ -84,9 +84,9 @@ namespace Battleships.Services
                 var userPlayer = players.FirstOrDefault(d => d.IsComputer == false);
                 var computerPlayer = players.FirstOrDefault(d => d.IsComputer == true);
 
-                var userHit = ProcessShot(computerPlayer!, rowChar, column);
+                var userHit = ProcessShot(computerPlayer!, userPlayer!, rowChar, column);
                 var computerShot = GenerateRandomShot();
-                var computerHit = ProcessShot(userPlayer!, computerShot.Row, computerShot.Column);
+                var computerHit = ProcessShot(userPlayer!, computerPlayer!, computerShot.Row, computerShot.Column);
 
                 await _unitOfWork.Boards.UpdateBoardAsync(userPlayer!.Board);
                 await _unitOfWork.Boards.UpdateBoardAsync(computerPlayer!.Board);
@@ -352,7 +352,7 @@ namespace Battleships.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to initialize board for player {PlayerName}", player.Name);
+                _logger.LogError(ex, "Failed to initialize board for opponent {PlayerName}", player.Name);
                 throw;
             }
         }
@@ -372,28 +372,28 @@ namespace Battleships.Services
             }
         }
 
-        public bool ProcessShot(Player player, char rowChar, int column)
+        public bool ProcessShot(Player opponent, Player shooter, char rowChar, int column)
         {
             try
             {
-                var grid = DeserializeGrid(player.Board.SerializedGrid!);
+                var grid = DeserializeGrid(opponent.Board.SerializedGrid!);
                 var (row, colIndex) = ParsePosition(rowChar, column);
 
                 bool hit = false;
                 if (grid[row, colIndex] == GlobalConstants.Ship)
                 {
                     grid[row, colIndex] = GlobalConstants.Hit;
-                    RegisterHitOnShip(player, row, colIndex);
+                    RegisterHitOnShip(opponent, row, colIndex);
                     hit = true;
 
                     // Add 15 points for hitting a ship
-                    player.Score += 15;
+                    shooter.Score += 15;
 
                     // Check if the ship is fully destroyed and add 50 points
-                    var hitShip = player.Fleet.Ships.FirstOrDefault(ship => ship.Hits >= ship.Size);
+                    var hitShip = opponent.Fleet.Ships.FirstOrDefault(ship => ship.Hits >= ship.Size);
                     if (hitShip != null && hitShip.Hits == hitShip.Size)
                     {
-                        player.Score += 50;
+                        shooter.Score += 50;
                     }
                 }
                 else if (grid[row, colIndex] == GlobalConstants.Water)
@@ -405,7 +405,7 @@ namespace Battleships.Services
                     throw new InvalidOperationException("Position already shot.");
                 }
 
-                player.Board.SerializedGrid = SerializeGrid(grid);
+                opponent.Board.SerializedGrid = SerializeGrid(grid);
                 return hit;
             }
             catch (Exception ex)
