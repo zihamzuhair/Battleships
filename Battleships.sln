@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleships.API", "Battleships.API\Battleships.API.csproj", "{06A76896-5B7B-45AB-BD3D-5935A54EAFBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleships.API", "Battleships.API\Battleships.API.csproj", "{06A76896-5B7B-45AB-BD3D-5935A54EAFBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleships.Core", "Battleships.Core\Battleships.Core.csproj", "{767C527A-AAA5-4F6D-81B4-01AD548B4001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleships.Core", "Battleships.Core\Battleships.Core.csproj", "{767C527A-AAA5-4F6D-81B4-01AD548B4001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleships.Services", "Battleships.Services\Battleships.Services.csproj", "{C031788F-E9EA-4835-B0C0-0855555B3BD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleships.Services", "Battleships.Services\Battleships.Services.csproj", "{C031788F-E9EA-4835-B0C0-0855555B3BD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleships.DAL", "Battleships.DAL\Battleships.DAL.csproj", "{F45DEFDD-A411-4BC0-8A96-AAA2C800C316}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleships.DAL", "Battleships.DAL\Battleships.DAL.csproj", "{F45DEFDD-A411-4BC0-8A96-AAA2C800C316}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleships.Services.Tests", "Battleships.Services.Tests\Battleships.Services.Tests.csproj", "{C19CA9C3-F317-485D-97E5-C7BD06E2E9A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F45DEFDD-A411-4BC0-8A96-AAA2C800C316}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F45DEFDD-A411-4BC0-8A96-AAA2C800C316}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F45DEFDD-A411-4BC0-8A96-AAA2C800C316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C19CA9C3-F317-485D-97E5-C7BD06E2E9A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C19CA9C3-F317-485D-97E5-C7BD06E2E9A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C19CA9C3-F317-485D-97E5-C7BD06E2E9A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C19CA9C3-F317-485D-97E5-C7BD06E2E9A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
