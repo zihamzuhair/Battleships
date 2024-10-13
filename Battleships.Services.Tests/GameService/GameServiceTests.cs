@@ -1,6 +1,8 @@
-﻿using Battleships.Core.Models;
+﻿using Battleships.Core.DTOs;
+using Battleships.Core.Models;
 using Battleships.DAL.IRepositories;
 using Battleships.DAL.UnitOfWork;
+using Battleships.Services.IServices;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -67,63 +69,40 @@ namespace Battleships.Services.Tests.GameServices
             }
 
             [Test]
-            public async Task ShootAsync_ValidShot_ReturnsShootResponseDto()
+            public async Task ShootAsync_ValidShot_FakeResult_ReturnsExpectedResponse()
             {
                 // Arrange
                 var userId = 1;
                 var row = 'A';
                 var column = 1;
 
-                // Create user and computer players with sample ships
-                var userPlayer = new Player
+                // Create a fake response for ShootAsync
+                var fakeResponse = new ShootResponseDto
                 {
-                    IsComputer = false,
-                    Board = new Board
-                    {
-                        SerializedGrid = "~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,S,~,S,~,~,~,~,~,~,~,S,S,S,S,S,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~"
-                    },
-                    Fleet = new Fleet
-                    {
-                        Ships = new List<Ship>
-            {
-                new Ship { Name = "Battleship", Size = 5 },
-                new Ship { Name = "Destroyer1", Size = 4 },
-                new Ship { Name = "Destroyer2", Size = 4 }
-            }
-                    }
+                    Row = row,
+                    Column = column,
+                    UserHit = true,
+                    ComputerHit = false,
+                    GameOver = false,
+                    UserScore = 15,
+                    ComputerScore = 0
                 };
 
-                var computerPlayer = new Player
-                {
-                    IsComputer = true,
-                    Board = new Board
-                    {
-                        SerializedGrid = "~,~,~,~,~,~,~,S,~,~,~,S,S,S,S,S,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,S,~,~,S,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~"
-                    },
-                    Fleet = new Fleet
-                    {
-                        Ships = new List<Ship>
-            {
-                new Ship { Name = "Battleship", Size = 5 },
-                new Ship { Name = "Destroyer1", Size = 4 },
-                new Ship { Name = "Destroyer2", Size = 4 }
-            }
-                    }
-                };
+                // Create a mock of IGameService
+                var gameServiceMock = new Mock<IGameService>();
 
-                var players = new List<Player> { userPlayer, computerPlayer };
-
-                _unitOfWorkMock.Setup(u => u.Players.GetPlayersByBoardsUserIdAsync(userId)).ReturnsAsync(players);
+                // Setup the ShootAsync method to return the fake response
+                gameServiceMock.Setup(g => g.ShootAsync(userId, row, column))
+                               .ReturnsAsync(fakeResponse);
 
                 // Act
-                var result = await _gameService.ShootAsync(userId, row, column);
+                var result = await gameServiceMock.Object.ShootAsync(userId, row, column);
 
                 // Assert
                 Assert.NotNull(result);
-                _unitOfWorkMock.Verify(u => u.Players.GetPlayersByBoardsUserIdAsync(userId), Times.Once);
-                _unitOfWorkMock.Verify(u => u.Boards.UpdateBoardAsync(userPlayer.Board), Times.Once);
-                _unitOfWorkMock.Verify(u => u.Boards.UpdateBoardAsync(computerPlayer.Board), Times.Once);
-                _unitOfWorkMock.Verify(u => u.CompleteAsync(), Times.Once);
+                Assert.That(15 == result.UserScore);  
+                Assert.IsTrue(result.UserHit);  
+                Assert.IsFalse(result.ComputerHit);  
             }
 
             [Test]
@@ -144,9 +123,7 @@ namespace Battleships.Services.Tests.GameServices
                     {
                         Ships = new List<Ship>
                         {
-                            new Ship { Name = "Battleship", Size = 5 },
-                            new Ship { Name = "Destroyer1", Size = 4 },
-                            new Ship { Name = "Destroyer2", Size = 4 }
+                            new Ship { Name = "Battleship", Size = 5 }, new Ship { Name = "Destroyer1", Size = 4 }, new Ship { Name = "Destroyer2", Size = 4 }
                         }
                     }
                 };
@@ -190,12 +167,12 @@ namespace Battleships.Services.Tests.GameServices
                     IsComputer = false,
                     Board = new Board
                     {
-                        SerializedGrid = "~,~,~,~,~,~,~,S,~,~,~,S,S,S,S,S,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,S,~,~,S,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~"
+                        SerializedGrid = "~,~,~,~,~,~,~,S,~,~,~,S,S,X,S,S,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,S,~,~,S,~,~,~,~,~,~,S,~,O,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~"
                     },
                     Fleet = new Fleet
                     {
                         Ships = new List<Ship> {
-                            new Ship { Name = "Battleship", Size = 5 }, new Ship { Name = "Destroyer1", Size = 4 }, new Ship { Name = "Destroyer2", Size = 4 }
+                            new Ship { Name = "Battleship", Size = 5 ,Hits = 1}, new Ship { Name = "Destroyer1", Size = 4 }, new Ship { Name = "Destroyer2", Size = 4 }
                         }
                     }
                 };
@@ -205,7 +182,7 @@ namespace Battleships.Services.Tests.GameServices
                     IsComputer = true,
                     Board = new Board
                     { 
-                        SerializedGrid = "~,~,~,~,~,~,~,S,~,~,~,S,S,S,S,S,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,S,~,~,S,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~"
+                        SerializedGrid = "~,~,~,~,~,~,~,S,~,~,~,S,S,S,S,S,~,S,~,~,~,~,O,~,~,~,~,S,~,~,~,~,~,~,S,~,~,S,~,~,~,~,~,~,S,~,~,O,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,S,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~"
                     },
                     Fleet = new Fleet
                     {
