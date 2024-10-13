@@ -6,6 +6,7 @@ namespace Battleships.DAL.UnitOfWork
     {
         IBoardRepository Boards { get; }
         IFleetRepository Fleets { get; }
+        IPlayerRepository Players { get; }
         Task<int> CompleteAsync(); 
     }
 }

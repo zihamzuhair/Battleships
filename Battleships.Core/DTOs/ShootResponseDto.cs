@@ -4,7 +4,8 @@
     {
         public char Row { get; set; }
         public int Column { get; set; }
-        public bool Hit { get; set; }
+        public bool ComputerHit { get; set; }
+        public bool UserHit { get; set; }
         public bool GameOver { get; set; } 
     }
 }

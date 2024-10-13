@@ -20,13 +20,6 @@ namespace Battleships.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Fleet> GetFleetAsync(int fleetId)
-        {
-            return await _context.Fleets
-                .Include(f => f.Ships) // Include the ships in the fleet.
-                .FirstOrDefaultAsync(f => f.Id == fleetId);
-        }
-
         public async Task UpdateFleetAsync(Fleet fleet)
         {
             _context.Fleets.Update(fleet);

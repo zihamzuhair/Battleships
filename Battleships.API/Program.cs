@@ -1,29 +1,17 @@
-using Battleships.Services;
-using Battleships.Services.IService;
-
-using Battleships.DAL.DbFactory;
-using Battleships.DAL.UnitOfWork;
+using Battleships.API.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register the DbContextFactory.
-builder.Services.AddSingleton<IDbContextFactory, DbContextFactory>();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
-// Register application services.
-builder.Services.AddScoped(provider =>
-{
-    var factory = provider.GetRequiredService<IDbContextFactory>();
-    return factory.CreateDbContext();
-});
+// Dependancy injection
+builder.Services.DependancyInjection();
 
-// Add services to the DI container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Register application services.
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IGameService, GameService>();
 
 var app = builder.Build();
 
