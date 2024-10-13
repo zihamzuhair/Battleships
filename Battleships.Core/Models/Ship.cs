@@ -9,5 +9,8 @@ namespace Battleships.Core.Models
         public int Hits { get; set; }
         public int FleetId { get; set; }
         public Fleet Fleet { get; set; } = null!;
+        public int StartRow { get; set; }
+        public int StartCol { get; set; }
+        public bool IsHorizontal { get; set; } // true = horizontal, false = vertical
     }
 }

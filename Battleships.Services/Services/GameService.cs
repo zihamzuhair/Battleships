@@ -439,9 +439,29 @@ namespace Battleships.Services
         {
             try
             {
+                // Iterate through all ships and check if the hit (row, col) matches any ship's position
                 foreach (var ship in player.Fleet.Ships)
                 {
-                    ship.Hits++; // Increment hit count (may need refinement depending on hit detection logic)
+                    // Check if the hit position is within the bounds of the current ship
+                    bool isHit = false;
+
+                    if (ship.IsHorizontal)
+                    {
+                        // Check if the hit is within the horizontal bounds of the ship
+                        isHit = row == ship.StartRow && col >= ship.StartCol && col < ship.StartCol + ship.Size;
+                    }
+                    else
+                    {
+                        // Check if the hit is within the vertical bounds of the ship
+                        isHit = col == ship.StartCol && row >= ship.StartRow && row < ship.StartRow + ship.Size;
+                    }
+
+                    // If the hit matches the ship's position, increase the hit count for that ship
+                    if (isHit)
+                    {
+                        ship.Hits++;
+                        break; // Exit loop after finding the hit ship
+                    }
                 }
             }
             catch (Exception ex)
@@ -465,6 +485,11 @@ namespace Battleships.Services
 
                     if (CanPlaceShip(ship.Size, startRow, startCol, horizontal, grid))
                     {
+                        // Store the ship's starting position and orientation
+                        ship.StartRow = startRow;
+                        ship.StartCol = startCol;
+                        ship.IsHorizontal = horizontal;
+
                         for (int i = 0; i < ship.Size; i++)
                         {
                             if (horizontal)
